@@ -492,9 +492,8 @@ if ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   $ipf 2 -i "$NET_IFACE" -o ppp+ -m conntrack --ctstate "$res" -j ACCEPT
   $ipf 3 -i ppp+ -o "$NET_IFACE" -j ACCEPT
   $ipf 4 -i ppp+ -o ppp+ -j ACCEPT
-  $ipf 5 -i "$NET_IFACE" -d "$XAUTH_NET" -m conntrack --ctstate "$res" -j ACCEPT
-  $ipf 6 -s "$XAUTH_NET" -o "$NET_IFACE" -j ACCEPT
-  $ipf 7 -s "$XAUTH_NET" -o ppp+ -j ACCEPT
+  $ipf 5 -d "$XAUTH_NET" -m conntrack --ctstate "$res" -j ACCEPT
+  $ipf 6 -s "$XAUTH_NET" -j ACCEPT
   # Client-to-client traffic is allowed by default. To *disallow* such traffic,
   # uncomment below and restart the Docker container.
   # $ipf 2 -i ppp+ -o ppp+ -s "$L2TP_NET" -d "$L2TP_NET" -j DROP
@@ -502,8 +501,8 @@ if ! iptables -t nat -C POSTROUTING -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
   # $ipf 4 -i ppp+ -d "$XAUTH_NET" -j DROP
   # $ipf 5 -s "$XAUTH_NET" -o ppp+ -j DROP
   iptables -A FORWARD -j DROP
-  $ipp -s "$XAUTH_NET" -o "$NET_IFACE" -m policy --dir out --pol none -j MASQUERADE
-  $ipp -s "$L2TP_NET" -o "$NET_IFACE" -j MASQUERADE
+  $ipp -s "$XAUTH_NET" -m policy --dir out --pol none -j MASQUERADE
+  $ipp -s "$L2TP_NET" -j MASQUERADE
 fi
 
 case $VPN_ANDROID_MTU_FIX in
