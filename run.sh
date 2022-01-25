@@ -347,6 +347,9 @@ conn shared
   salifetime=24h
   sha2-truncbug=$sha2_truncbug
 
+conn withdns
+  modecfgdns="`hostname -i | cut -f 1 -d " "`"
+
 EOF
 
 if [ "$disable_ipsec_l2tp" != "yes" ]; then
@@ -521,6 +524,10 @@ esac
 
 # Update file attributes
 chmod 600 /etc/ipsec.secrets /etc/ppp/chap-secrets /etc/ipsec.d/passwd
+
+echo
+echo "Starting dnsmasq..."
+dnsmasq
 
 echo
 echo "Starting IPsec service..."
